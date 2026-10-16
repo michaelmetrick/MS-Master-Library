@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZSFG / UCSF Clinical Toxicology LC-QTOF-MS Library &amp; CFSRE NPS Portal</title>
+<style>
+  :root {
+    --bg: #070b14;
+    --nav: #0f172a;
+    --border: #1e293b;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --accent: #38bdf8;
+    --amber: #f59e0b;
+    --purple: #a855f7;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+  }
+  .top-nav {
+    height: 50px;
+    background: linear-gradient(90deg, #090f1f 0%, #111c38 100%);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    gap: 12px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+  .brand-badge {
+    background: rgba(56, 189, 248, 0.16);
+    color: var(--accent);
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+  .nav-tabs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .nav-btn {
+    background: #131c33;
+    color: var(--muted);
+    border: 1px solid #263554;
+    border-radius: 7px;
+    padding: 6px 13px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .nav-btn:hover {
+    color: #fff;
+    border-color: #475569;
+  }
+  .nav-btn.active {
+    background: #1d4ed8;
+    color: #fff;
+    border-color: #60a5fa;
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
+  }
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+  }
+  .dl-link {
+    color: #cbd5e1;
+    background: #1e293b;
+    border: 1px solid #334155;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 6px;
+  }
+  .dl-link:hover {
+    background: #334155;
+    color: #fff;
+  }
+  .frame-wrap {
+    width: 100%;
+    height: calc(100vh - 50px);
+    position: relative;
+  }
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: none;
+    background: var(--bg);
+  }
+  iframe.active {
+    display: block;
+  }
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <div class="brand">
+    <span>🔬 ZSFG / UCSF Toxicology MS/MS Library Portal</span>
+    <span class="brand-badge">SCIEX X500R &amp; ZenoTOF 7600</span>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="nav-btn active" data-target="frameMaster" data-src="master_library_cfsre.html">
+      📚 1. Master 35-Library Explorer &amp; CFSRE Surveillance (6,750)
+    </button>
+    <button class="nav-btn" data-target="frameComp" data-src="x500r_vs_7600_cid.html">
+      ⚖️ 2. X500R vs. ZenoTOF 7600 CID Overlay (231 Overlap)
+    </button>
+    <button class="nav-btn" data-target="frameInSilico" data-src="clinical_tox_insilico_db.html">
+      🧬 3. In-Silico MS/MS &amp; Metabolite Database (459 Compounds)
+    </button>
+  </div>
+
+  <div class="nav-actions">
+    <a class="dl-link" href="Master_Library_ALL_2_Replicate_and_CFSRE_Report.csv" download>⬇ Master CSV</a>
+    <a class="dl-link" href="X500R_vs_7600_CID_Overlap_Comparison.csv" download>⬇ X500R vs 7600 CSV</a>
+    <a class="dl-link" id="openStandaloneBtn" href="master_library_cfsre.html" target="_blank">↗ Full Tab</a>
+  </div>
+</nav>
+
+<div class="frame-wrap">
+  <iframe id="frameMaster" class="active" src="master_library_cfsre.html" title="Master 35-Library Explorer and CFSRE Surveillance"></iframe>
+  <iframe id="frameComp" data-lazy-src="x500r_vs_7600_cid.html" title="X500R vs ZenoTOF 7600 CID Comparison"></iframe>
+  <iframe id="frameInSilico" data-lazy-src="clinical_tox_insilico_db.html" title="Clinical Toxicology In-Silico Database"></iframe>
+</div>
+
+<script>
+const buttons = document.querySelectorAll('.nav-btn');
+const frames = document.querySelectorAll('.frame-wrap iframe');
+const standaloneLink = document.getElementById('openStandaloneBtn');
+
+buttons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    buttons.forEach(b => b.classList.remove('active'));
+    frames.forEach(f => f.classList.remove('active'));
+    btn.classList.add('active');
+
+    const targetId = btn.dataset.target;
+    const targetSrc = btn.dataset.src;
+    const frame = document.getElementById(targetId);
+    if (frame && !frame.getAttribute('src')) {
+      frame.setAttribute('src', frame.dataset.lazySrc);
+    }
+    if (frame) frame.classList.add('active');
+    standaloneLink.setAttribute('href', targetSrc);
+  });
+});
+</script>
+</body>
+</html>
